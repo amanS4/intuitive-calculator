@@ -70,12 +70,21 @@
   border-radius: 10px;
   width: 168px;
   position: absolute;
-  height: calc(100vh - 1.4em);
-  top: 10px;
+  height: calc(100vh - 1.9em);
+  top: 1em;
   left: 20px;
   z-index: 10;
   background: white;
   padding: 0 1em;
+  transition: 0.1s all linear;
+}
+
+.sidebar.smaller {
+  height: 40px;
+  overflow: hidden;
+  width: 40px;
+  border-radius: 50%;
+  padding: 0.1em;
 }
 
 .react-flow__node {
@@ -126,6 +135,7 @@
   border-radius: 10px;
   align-items: flex-start;
   justify-content: flex-start;
+  z-index: 99;
 }
 
 .save-button-custom .diskbtn {
@@ -189,8 +199,46 @@
   font-size: 0.9em;
 }
 
+.sidebar-btn {
+  margin-top: 0.2em;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
 @media (min-width: 768px) {
   .button-36 {
     padding: 0 1rem;
   }
+}
+
+.touchdevice-flow .react-flow__handle {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background-color: #9f7aea;
+}
+
+.touchdevice-flow .react-flow__handle.connecting {
+  animation: bounce 1600ms infinite ease-out;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translate(0, -50%) scale(1);
+  }
+  50% {
+    transform: translate(0, -50%) scale(1.1);
+  }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }

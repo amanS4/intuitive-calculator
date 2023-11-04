@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useReactFlow } from "reactflow";
 import { ECustomNodeTypes, EDragDropZones } from "../../constants";
 
 const Sidebar: React.FC = () => {
   const reactFlowInstance = useReactFlow();
+  const [expandedMenu, setExpandedMenu] = useState(false);
 
   const onDragStart = (event: React.DragEvent, nodeType: string) => {
     event.dataTransfer.setData(EDragDropZones.canvas, nodeType);
@@ -15,7 +16,7 @@ const Sidebar: React.FC = () => {
       id: Date.now().toString(),
       type,
       position: reactFlowInstance.project({
-        x: 220 + reactFlowInstance.getNodes().length * 10,
+        x: 220,
         y: 100 + reactFlowInstance.getNodes().length * 10,
       }),
       data: type === "operation" ? "+" : 0,
@@ -29,7 +30,18 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${!expandedMenu ? "smaller" : ""}`}>
+      <button
+        onClick={() => setExpandedMenu((val) => !val)}
+        className="sidebar-btn"
+      >
+        <img
+          src={expandedMenu ? "/back.png" : "/hamburger.png"}
+          height={30}
+          width={30}
+          alt=""
+        />
+      </button>
       <div className="sidebar-text">Add by Drag & Drop</div>
       <div
         className="draggable-btns"

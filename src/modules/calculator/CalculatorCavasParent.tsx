@@ -84,6 +84,8 @@ const CalculatorCavasParent = () => {
         fitView
         selectionOnDrag
         panOnScroll
+        className="touchdevice-flow"
+        connectOnClick
       />
       <SaveCanvasButton />
     </section>
