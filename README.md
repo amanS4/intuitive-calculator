@@ -29,4 +29,6 @@
    
 
 
-DEV - npm run dev
+DEV -
+   npm ci
+   npm run dev
