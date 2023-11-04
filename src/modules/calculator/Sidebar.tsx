@@ -42,27 +42,35 @@ const Sidebar: React.FC = () => {
           alt=""
         />
       </button>
-      <div className="sidebar-text">Add by Drag & Drop</div>
-      <div
-        className="draggable-btns"
-        onDragStart={(event) => onDragStart(event, ECustomNodeTypes.input)}
-        draggable
-      >
-        <img src="/input-sample.png" alt="Add Input By Drag" width={100} />
-      </div>
-      <div
-        className="draggable-btns"
-        onDragStart={(event) => onDragStart(event, ECustomNodeTypes.operation)}
-        draggable
-      >
-        <img src="/operation-sample.png" alt="Add Input By Drag" width={100} />
-      </div>
-      <div
-        className="draggable-btns"
-        onDragStart={(event) => onDragStart(event, ECustomNodeTypes.result)}
-        draggable
-      >
-        <img src="/result-sample.png" alt="Add Input By Drag" width={100} />
+      <div className="draggables-container">
+        <div className="sidebar-text">Add by Drag & Drop</div>
+        <div
+          className="draggable-btns"
+          onDragStart={(event) => onDragStart(event, ECustomNodeTypes.input)}
+          draggable
+        >
+          <img src="/input-sample.png" alt="Add Input By Drag" width={100} />
+        </div>
+        <div
+          className="draggable-btns"
+          onDragStart={(event) =>
+            onDragStart(event, ECustomNodeTypes.operation)
+          }
+          draggable
+        >
+          <img
+            src="/operation-sample.png"
+            alt="Add Input By Drag"
+            width={100}
+          />
+        </div>
+        <div
+          className="draggable-btns"
+          onDragStart={(event) => onDragStart(event, ECustomNodeTypes.result)}
+          draggable
+        >
+          <img src="/result-sample.png" alt="Add Input By Drag" width={100} />
+        </div>
       </div>
       <div className="sidebar-text"> Add by Click</div>
       <button
