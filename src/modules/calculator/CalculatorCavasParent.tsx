@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ReactFlow, {
   addEdge,
   useNodesState,
@@ -20,6 +20,7 @@ const CalculatorCavasParent = () => {
   const [canvasHistory, setCanvasHistory] = useState([
     { nodes: [] as Node[], edges: [] as Edge[] },
   ]);
+  const reactFlowWrapper = useRef<HTMLDivElement>();
   const reactFlowInstance = useReactFlow();
 
   const onDragOver = useCallback((event: any) => {
@@ -30,9 +31,11 @@ const CalculatorCavasParent = () => {
   const onDrop = useCallback(
     (event: any) => {
       event.preventDefault();
+      const reactFlowBounds =
+        reactFlowWrapper?.current?.getBoundingClientRect();
       const position = reactFlowInstance.project({
-        x: event.clientX,
-        y: event.clientY,
+        x: event.clientX - (reactFlowBounds ? reactFlowBounds?.left : 0),
+        y: event.clientY - (reactFlowBounds ? reactFlowBounds?.top : 0),
       });
       const type = event.dataTransfer.getData(EDragDropZones.canvas);
       const newNode = {
@@ -44,7 +47,7 @@ const CalculatorCavasParent = () => {
 
       setNodes((nds) => nds.concat(newNode));
     },
-    [reactFlowInstance, setNodes]
+    [reactFlowInstance, setNodes, reactFlowWrapper]
   );
 
   const recalculateResults = useCallback(
@@ -98,7 +101,10 @@ const CalculatorCavasParent = () => {
   }, [nodes.length, edges.length, updateHistory]);
 
   return (
-    <section style={{ height: "100vh", width: "100vw", background: "#fff" }}>
+    <section
+      ref={reactFlowWrapper}
+      style={{ height: "100vh", width: "100vw", background: "#fff" }}
+    >
       <Sidebar handleUndo={handleUndo} setCanvasHistory={setCanvasHistory} />
       <ReactFlow
         onDragOver={onDragOver}
