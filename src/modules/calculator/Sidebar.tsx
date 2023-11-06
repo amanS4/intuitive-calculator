@@ -1,8 +1,20 @@
-import React, { useState } from "react";
-import { useReactFlow } from "reactflow";
+import React, { Dispatch, SetStateAction, useState } from "react";
+import { Edge, Node, useReactFlow } from "reactflow";
 import { ECustomNodeTypes, EDragDropZones } from "../../constants";
 
-const Sidebar: React.FC = () => {
+interface ISidebar {
+  handleUndo: () => void;
+  setCanvasHistory: Dispatch<
+    SetStateAction<
+      {
+        nodes: Node[];
+        edges: Edge[];
+      }[]
+    >
+  >;
+}
+const Sidebar: React.FC<ISidebar> = (props) => {
+  const { handleUndo, setCanvasHistory } = props;
   const reactFlowInstance = useReactFlow();
   const [expandedMenu, setExpandedMenu] = useState(false);
 
@@ -21,17 +33,25 @@ const Sidebar: React.FC = () => {
       }),
       data: type === "operation" ? "+" : 0,
     };
-    reactFlowInstance.addNodes(newNode);
+    reactFlowInstance.setNodes((oldNodes) => {
+      return [...oldNodes, newNode];
+    });
   };
 
   const resetHandler = () => {
     reactFlowInstance.setNodes([]);
-    reactFlowInstance.addEdges([]);
+    reactFlowInstance.setEdges([]);
+    setCanvasHistory([{ nodes: [], edges: [] }]);
   };
 
   return (
     <div className={`sidebar ${!expandedMenu ? "smaller" : ""}`}>
       <button
+        style={
+          expandedMenu
+            ? { position: "absolute", right: "-3.4em", top: "0.5em" }
+            : {}
+        }
         onClick={() => setExpandedMenu((val) => !val)}
         className="sidebar-btn"
       >
@@ -94,6 +114,9 @@ const Sidebar: React.FC = () => {
       <hr />
       <button className="button-custom-styles" onClick={resetHandler}>
         Reset
+      </button>
+      <button className="button-custom-styles" onClick={handleUndo}>
+        Undo
       </button>
     </div>
   );

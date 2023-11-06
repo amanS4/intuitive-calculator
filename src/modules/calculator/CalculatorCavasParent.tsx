@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ReactFlow, {
   addEdge,
   useNodesState,
@@ -17,6 +17,9 @@ import SaveCanvasButton from "./SaveCanvasButton";
 const CalculatorCavasParent = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [canvasHistory, setCanvasHistory] = useState([
+    { nodes: [] as Node[], edges: [] as Edge[] },
+  ]);
   const reactFlowInstance = useReactFlow();
 
   const onDragOver = useCallback((event: any) => {
@@ -69,9 +72,34 @@ const CalculatorCavasParent = () => {
     [setNodes, setEdges, recalculateResults]
   );
 
+  const handleUndo = useCallback(() => {
+    const lastChange = canvasHistory.at(-2);
+    if (!lastChange) return;
+    setEdges(lastChange.edges);
+    setNodes(lastChange.nodes);
+    setCanvasHistory((lastHistory) => lastHistory.slice(0, -1));
+  }, [canvasHistory, setEdges, setNodes]);
+
+  const updateHistory = useCallback(
+    (newNodes: Node[], newEdges: Edge[]) => {
+      setCanvasHistory((lastHistory) => {
+        const lastHistoryElms = lastHistory.at(-1);
+        return lastHistoryElms?.edges?.length !== newEdges.length ||
+          lastHistoryElms?.nodes?.length !== newNodes.length
+          ? [...lastHistory, { nodes: newNodes, edges: newEdges }]
+          : lastHistory;
+      });
+    },
+    [setCanvasHistory]
+  );
+
+  useEffect(() => {
+    if (nodes.length || edges.length) updateHistory(nodes, edges);
+  }, [nodes.length, edges.length, updateHistory]);
+
   return (
     <section style={{ height: "100vh", width: "100vw", background: "#fff" }}>
-      <Sidebar />
+      <Sidebar handleUndo={handleUndo} setCanvasHistory={setCanvasHistory} />
       <ReactFlow
         onDragOver={onDragOver}
         onDrop={onDrop}
